@@ -1,7 +1,7 @@
 #!/home/jeremy/git/Party-Button/party_env/bin/python
 
 import pychromecast
-import pychromecast.controllers.youtube as youtube
+#import pychromecast.controllers.youtube as youtube
 
 video_url = ""
 video_format = ""
@@ -12,7 +12,7 @@ cast_device = "SHIELD"
 
 print "connecting to cast device:"
 cast = pychromecast.get_chromecast(friendly_name=cast_device)
-cast.wait()
+#cast.wait()
 print cast.device
 print cast.status
 
@@ -21,8 +21,19 @@ print cast.status
 #cast.register_handler(yt)
 
 print "Trying to play media:"
-#yt.play_video("https://www.youtube.com/watch?v=y6120QOlsfU")
+#yt.play_video("y6120QOlsfU")
 mc = cast.media_controller
 mc.play_media(video_url, video_format)
 
-print mc.status
+playing = False
+while True:
+    while not mc.status.player_is_playing:
+        if playing:
+            # video stopped playing, don't do stuff
+            playing = False
+            print "Not playing event fired"
+    while mc.status.player_is_playing:
+        if not playing:
+            # video started playing, do stuff
+            playing = True
+            print "Playing event fired"
